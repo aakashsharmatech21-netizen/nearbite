@@ -23,11 +23,11 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Delete item
-router.delete('/:id', authMiddleware, async (req, res) => {
+// Trending - top 3 (must be before /:id routes)
+router.get('/trending', async (req, res) => {
   try {
-    await MenuItem.findOneAndDelete({ _id: req.params.id, cookId: req.cookId });
-    res.json({ message: 'Deleted' });
+    const items = await MenuItem.find().sort({ clicks: -1 }).limit(3).populate('cookId', 'name pincode phone');
+    res.json(items);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -47,11 +47,11 @@ router.post('/:id/click', async (req, res) => {
   }
 });
 
-// Trending - top 3
-router.get('/trending', async (req, res) => {
+// Delete item
+router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    const items = await MenuItem.find().sort({ clicks: -1 }).limit(3).populate('cookId', 'name pincode phone');
-    res.json(items);
+    await MenuItem.findOneAndDelete({ _id: req.params.id, cookId: req.cookId });
+    res.json({ message: 'Deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

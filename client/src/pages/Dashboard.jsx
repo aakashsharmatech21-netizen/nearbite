@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const BASE = 'https://nearbite-server-ve2u.onrender.com';
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -23,7 +25,7 @@ export default function Dashboard() {
 
   const fetchMenu = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/menu', { headers });
+      const res = await fetch(`${BASE}/api/menu`, { headers });
       const data = await res.json();
       setMenuItems(data);
     } catch (err) {
@@ -35,7 +37,7 @@ export default function Dashboard() {
 
   const handleToggle = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/auth/toggle', {
+      const res = await fetch(`${BASE}/api/auth/toggle`, {
         method: 'PATCH',
         headers,
       });
@@ -50,7 +52,7 @@ export default function Dashboard() {
     e.preventDefault();
     setAdding(true);
     try {
-      const res = await fetch('http://localhost:5000/api/menu', {
+      const res = await fetch(`${BASE}/api/menu`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ ...form, price: Number(form.price) }),
@@ -67,7 +69,7 @@ export default function Dashboard() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/menu/${id}`, {
+      await fetch(`${BASE}/api/menu/${id}`, {
         method: 'DELETE',
         headers,
       });
@@ -209,3 +211,4 @@ export default function Dashboard() {
     </div>
   );
 }
+//changes made

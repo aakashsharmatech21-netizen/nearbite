@@ -33,20 +33,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDF6EE] flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-md p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-1">Welcome back</h2>
-        <p className="text-gray-500 text-sm mb-6">Login to your NearBite account</p>
+    <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center px-4">
+      <div className="bg-[#141414] border border-[#1e1e1e] rounded-2xl p-8 w-full max-w-md">
+        <div className="mb-8">
+          <p className="text-xs font-medium tracking-widest text-[#555] uppercase mb-3">Welcome back</p>
+          <h2 className="text-3xl font-medium tracking-tight text-white">Login to <span className="text-orange-500">NearBite</span></h2>
+        </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 text-sm px-4 py-2 rounded-lg mb-4">
+          <div className="bg-[#1a1a1a] border border-red-900 text-red-400 text-sm px-4 py-3 rounded-xl mb-6">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1">Email</label>
+            <label className="text-xs font-medium text-[#555] uppercase tracking-wider block mb-2">Email</label>
             <input
               type="email"
               name="email"
@@ -54,11 +56,11 @@ export default function Login() {
               onChange={handleChange}
               placeholder="you@example.com"
               required
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl px-4 py-3 text-sm text-white placeholder-[#444] focus:outline-none focus:border-orange-500 transition"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1">Password</label>
+            <label className="text-xs font-medium text-[#555] uppercase tracking-wider block mb-2">Password</label>
             <input
               type="password"
               name="password"
@@ -66,23 +68,21 @@ export default function Login() {
               onChange={handleChange}
               placeholder="••••••••"
               required
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl px-4 py-3 text-sm text-white placeholder-[#444] focus:outline-none focus:border-orange-500 transition"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-full transition disabled:opacity-60"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-full transition disabled:opacity-60 mt-2"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-500 mt-6">
+        <p className="text-sm text-center text-[#555] mt-6">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-orange-500 font-medium hover:underline">
-            Sign up
-          </Link>
+          <Link to="/signup" className="text-orange-500 hover:text-orange-400 transition">Sign up</Link>
         </p>
       </div>
     </div>

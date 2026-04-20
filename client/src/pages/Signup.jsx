@@ -5,9 +5,7 @@ const BASE = 'https://nearbite-server-ve2u.onrender.com';
 
 export default function Signup() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    name: '', email: '', password: '', phone: '', pincode: '', bio: '',
-  });
+  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '', pincode: '', bio: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -42,14 +40,19 @@ export default function Signup() {
     { name: 'pincode', label: 'Pincode', type: 'text', placeholder: '201301' },
   ];
 
+  const inputClass = "w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl px-4 py-3 text-sm text-white placeholder-[#444] focus:outline-none focus:border-orange-500 transition";
+
   return (
-    <div className="min-h-screen bg-[#FDF6EE] flex items-center justify-center px-4 py-10">
-      <div className="bg-white rounded-2xl shadow-md p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-1">Join as a Cook</h2>
-        <p className="text-gray-500 text-sm mb-6">Start selling your home-cooked food on NearBite</p>
+    <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center px-4 py-10">
+      <div className="bg-[#141414] border border-[#1e1e1e] rounded-2xl p-8 w-full max-w-md">
+        <div className="mb-8">
+          <p className="text-xs font-medium tracking-widest text-[#555] uppercase mb-3">Get started</p>
+          <h2 className="text-3xl font-medium tracking-tight text-white">Join as a <span className="text-orange-500">Cook</span></h2>
+          <p className="text-[#555] text-sm mt-2">Start selling your home-cooked food on NearBite</p>
+        </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 text-sm px-4 py-2 rounded-lg mb-4">
+          <div className="bg-[#1a1a1a] border border-red-900 text-red-400 text-sm px-4 py-3 rounded-xl mb-6">
             {error}
           </div>
         )}
@@ -57,43 +60,33 @@ export default function Signup() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {fields.map(({ name, label, type, placeholder }) => (
             <div key={name}>
-              <label className="text-sm font-medium text-gray-700 block mb-1">{label}</label>
-              <input
-                type={type}
-                name={name}
-                value={form[name]}
-                onChange={handleChange}
-                placeholder={placeholder}
-                required
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-              />
+              <label className="text-xs font-medium text-[#555] uppercase tracking-wider block mb-2">{label}</label>
+              <input type={type} name={name} value={form[name]} onChange={handleChange} placeholder={placeholder} required className={inputClass} />
             </div>
           ))}
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1">Bio</label>
+            <label className="text-xs font-medium text-[#555] uppercase tracking-wider block mb-2">Bio</label>
             <textarea
               name="bio"
               value={form.bio}
               onChange={handleChange}
               placeholder="Tell customers about your cooking..."
               rows={3}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+              className={`${inputClass} resize-none`}
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-full transition disabled:opacity-60"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 rounded-full transition disabled:opacity-60 mt-2"
           >
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-500 mt-6">
+        <p className="text-sm text-center text-[#555] mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-orange-500 font-medium hover:underline">
-            Login
-          </Link>
+          <Link to="/login" className="text-orange-500 hover:text-orange-400 transition">Login</Link>
         </p>
       </div>
     </div>

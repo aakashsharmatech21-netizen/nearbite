@@ -13,6 +13,11 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
 
+  // Delivery charge state
+  const [deliveryCharge, setDeliveryCharge] = useState('');
+  const [savingCharge, setSavingCharge] = useState(false);
+  const [chargeSaved, setChargeSaved] = useState(false);
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
@@ -21,6 +26,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (!token) { navigate('/login'); return; }
     fetchMenu();
+    fetchProfile();
   }, []);
 
   const fetchMenu = async () => {
@@ -35,6 +41,18 @@ export default function Dashboard() {
     }
   };
 
+  // Load existing deliveryCharge from profile
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch(`${BASE}/api/auth/profile`, { headers });
+      const data = await res.json();
+      setDeliveryCharge(data.deliveryCharge ?? 0);
+      setIsOpen(data.isOpen ?? false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleToggle = async () => {
     try {
       const res = await fetch(`${BASE}/api/auth/toggle`, {
@@ -45,6 +63,23 @@ export default function Dashboard() {
       setIsOpen(data.isOpen);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleSaveCharge = async () => {
+    setSavingCharge(true);
+    try {
+      await fetch(`${BASE}/api/auth/profile`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ deliveryCharge: Number(deliveryCharge) }),
+      });
+      setChargeSaved(true);
+      setTimeout(() => setChargeSaved(false), 2000);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSavingCharge(false);
     }
   };
 
@@ -69,10 +104,7 @@ export default function Dashboard() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`${BASE}/api/menu/${id}`, {
-        method: 'DELETE',
-        headers,
-      });
+      await fetch(`${BASE}/api/menu/${id}`, { method: 'DELETE', headers });
       setMenuItems(menuItems.filter((item) => item._id !== id));
     } catch (err) {
       console.error(err);
@@ -119,6 +151,37 @@ export default function Dashboard() {
           </button>
         </div>
 
+        {/* ── Delivery Charge ── */}
+        <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
+          <h2 className="text-base font-semibold text-gray-700 mb-1">Delivery Charge</h2>
+          <p className="text-xs text-gray-400 mb-4">
+            This is added to the order total when a customer chooses home delivery.
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">₹</span>
+              <input
+                type="number"
+                min="0"
+                placeholder="0"
+                value={deliveryCharge}
+                onChange={(e) => setDeliveryCharge(e.target.value)}
+                className="border border-gray-200 rounded-xl pl-7 pr-4 py-2.5 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              />
+            </div>
+            <button
+              onClick={handleSaveCharge}
+              disabled={savingCharge}
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition disabled:opacity-60"
+            >
+              {savingCharge ? 'Saving...' : 'Save'}
+            </button>
+            {chargeSaved && (
+              <span className="text-green-600 text-sm font-medium">✅ Saved!</span>
+            )}
+          </div>
+        </div>
+
         {/* Add Menu Item Form */}
         <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
           <h2 className="text-base font-semibold text-gray-700 mb-4">Add Menu Item</h2>
@@ -157,11 +220,9 @@ export default function Dashboard() {
                     form.isVeg ? 'bg-green-500' : 'bg-gray-300'
                   }`}
                 >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                      form.isVeg ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
+                  <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                    form.isVeg ? 'translate-x-5' : 'translate-x-0'
+                  }`} />
                 </button>
                 <span className="text-sm font-medium text-gray-700">
                   {form.isVeg ? '🟢 Veg' : '🔴 Non-veg'}
@@ -190,25 +251,16 @@ export default function Dashboard() {
           ) : (
             <div className="space-y-3">
               {menuItems.map((item) => (
-                <div
-                  key={item._id}
-                  className="bg-white rounded-2xl shadow-sm overflow-hidden"
-                >
+                <div key={item._id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
                   {item.photo && (
-                    <img
-                      src={item.photo}
-                      alt={item.name}
-                      className="w-full h-36 object-cover"
-                    />
+                    <img src={item.photo} alt={item.name} className="w-full h-36 object-cover" />
                   )}
                   <div className="px-5 py-4 flex items-center justify-between">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-gray-800 text-sm">{item.name}</span>
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          item.isVeg
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-red-100 text-red-600'
+                          item.isVeg ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
                         }`}>
                           {item.isVeg ? 'Veg' : 'Non-veg'}
                         </span>

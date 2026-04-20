@@ -125,7 +125,7 @@ export default function Home() {
       {/* Footer */}
       <div className="border-t border-[#1a1a1a] px-6 py-8 flex items-center justify-between max-w-4xl mx-auto">
         <span className="text-[#444] text-sm">NearBite</span>
-        <span className="text-[#333] text-xs">© 2025 NearBite. Made with love.</span>
+        <span className="text-[#333] text-xs">© 2026 NearBite. Made with love.</span>
       </div>
 
     </div>

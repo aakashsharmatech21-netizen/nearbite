@@ -79,6 +79,24 @@ export default function Dashboard() {
     }
   };
 
+  const handlePhotoUpload = async (itemId, file) => {
+    const formData = new FormData();
+    formData.append('photo', file);
+    try {
+      const res = await fetch(`${BASE}/api/menu/${itemId}/photo`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      setMenuItems(menuItems.map((item) =>
+        item._id === itemId ? { ...item, photo: data.photo } : item
+      ));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FDF6EE] px-4 py-8">
       <div className="max-w-3xl mx-auto">
@@ -175,32 +193,52 @@ export default function Dashboard() {
               {menuItems.map((item) => (
                 <div
                   key={item._id}
-                  className="bg-white rounded-2xl shadow-sm px-5 py-4 flex items-center justify-between"
+                  className="bg-white rounded-2xl shadow-sm overflow-hidden"
                 >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-800 text-sm">{item.name}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        item.isVeg
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-red-100 text-red-600'
-                      }`}>
-                        {item.isVeg ? 'Veg' : 'Non-veg'}
-                      </span>
-                      {item.tag && (
-                        <span className="text-xs bg-orange-50 text-orange-500 px-2 py-0.5 rounded-full">
-                          {item.tag}
+                  {item.photo && (
+                    <img
+                      src={item.photo}
+                      alt={item.name}
+                      className="w-full h-36 object-cover"
+                    />
+                  )}
+                  <div className="px-5 py-4 flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-800 text-sm">{item.name}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          item.isVeg
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-red-100 text-red-600'
+                        }`}>
+                          {item.isVeg ? 'Veg' : 'Non-veg'}
                         </span>
-                      )}
+                        {item.tag && (
+                          <span className="text-xs bg-orange-50 text-orange-500 px-2 py-0.5 rounded-full">
+                            {item.tag}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-orange-500 font-semibold text-sm mt-0.5">₹{item.price}</p>
                     </div>
-                    <p className="text-orange-500 font-semibold text-sm mt-0.5">₹{item.price}</p>
+                    <div className="flex items-center gap-3">
+                      <label className="text-xs text-orange-500 hover:text-orange-600 font-medium cursor-pointer transition">
+                        {item.photo ? '📷 Change' : '📷 Add Photo'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handlePhotoUpload(item._id, e.target.files[0])}
+                        />
+                      </label>
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="text-sm text-red-400 hover:text-red-600 font-medium transition"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    className="text-sm text-red-400 hover:text-red-600 font-medium transition"
-                  >
-                    Delete
-                  </button>
                 </div>
               ))}
             </div>
@@ -211,4 +249,3 @@ export default function Dashboard() {
     </div>
   );
 }
-//changes made

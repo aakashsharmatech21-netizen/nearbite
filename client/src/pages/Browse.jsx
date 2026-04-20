@@ -105,6 +105,13 @@ export default function Browse() {
                       key={item._id}
                       className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
                     >
+                      {item.photo && (
+                        <img
+                          src={item.photo}
+                          alt={item.name}
+                          className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                        />
+                      )}
                       <div className="flex items-center gap-2">
                         <span className={`w-3 h-3 rounded-sm border-2 flex-shrink-0 ${
                           item.isVeg ? 'border-green-500' : 'border-red-500'

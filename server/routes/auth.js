@@ -49,4 +49,28 @@ router.patch('/toggle', authMiddleware, async (req, res) => {
   }
 });
 
+// Update profile (bio, deliveryCharge)
+router.patch('/profile', authMiddleware, async (req, res) => {
+  try {
+    const { bio, deliveryCharge } = req.body;
+    const cook = await Cook.findByIdAndUpdate(
+      req.cookId,
+      { bio, deliveryCharge },
+      { new: true }
+    ).select('-password');
+    res.json(cook);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+// Get profile
+router.get('/profile', authMiddleware, async (req, res) => {
+  try {
+    const cook = await Cook.findById(req.cookId).select('-password');
+    res.json(cook);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

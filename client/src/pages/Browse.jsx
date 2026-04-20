@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const BASE = 'https://nearbite-server-ve2u.onrender.com';
 
@@ -9,19 +9,20 @@ export default function Browse() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState('');
+
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-
-    if (!pincode.trim()) return; // ✅ basic validation
+  // ✅ Reusable fetch function (clean approach)
+  const fetchCooks = async (pin) => {
+    if (!pin.trim()) return;
 
     setLoading(true);
     setError('');
     setSearched(true);
 
     try {
-      const res = await fetch(`${BASE}/api/cooks?pincode=${pincode}`);
+      const res = await fetch(`${BASE}/api/cooks?pincode=${pin}`);
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message || 'Something went wrong');
@@ -33,6 +34,20 @@ export default function Browse() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // ✅ Auto fetch from URL (?pincode=xxxxxx)
+  useEffect(() => {
+    const p = searchParams.get('pincode');
+    if (p) {
+      setPincode(p);
+      fetchCooks(p);
+    }
+  }, [searchParams]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchCooks(pincode);
   };
 
   const handleItemClick = async (itemId) => {
@@ -180,7 +195,6 @@ export default function Browse() {
                           ₹{item.price}
                         </span>
 
-                        {/* ✅ FIXED ORDER BUTTON */}
                         <a
                           href={`https://wa.me/91${cook.phone || ''}?text=${encodeURIComponent(
                             `Hi, I'd like to order ${item.name} for ₹${item.price}`

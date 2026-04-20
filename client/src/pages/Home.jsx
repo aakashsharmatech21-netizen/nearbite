@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BASE = 'https://nearbite-server-ve2u.onrender.com';
 
 export default function Home() {
   const [trending, setTrending] = useState([]);
-
+  const [pincode, setPincode] = useState('');
+  const navigate = useNavigate();
   useEffect(() => {
     fetch(`${BASE}/api/menu/trending`)
       .then((res) => res.json())
@@ -24,12 +26,17 @@ export default function Home() {
           Find home cooks near you. Order on WhatsApp. Pick up fresh food.
         </p>
         <div className="flex justify-center gap-4">
-          <input
+                    <input
             type="text"
+            value={pincode}
+            onChange={(e) => setPincode(e.target.value)}
             placeholder="Enter your pincode..."
             className="border border-gray-300 rounded-full px-5 py-3 w-64 focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
-          <button className="bg-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-600 transition">
+          <button
+            onClick={() => pincode && navigate(`/browse?pincode=${pincode}`)}
+            className="bg-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-600 transition"
+          >
             Find Cooks
           </button>
         </div>

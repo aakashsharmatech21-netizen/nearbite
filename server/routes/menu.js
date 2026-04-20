@@ -1,7 +1,22 @@
 const router = require('express').Router();
 const MenuItem = require('../models/MenuItem');
 const authMiddleware = require('../middleware/auth');
+const { upload } = require("../config/cloudinary");
 
+// Upload photo for a dish
+router.post("/:id/photo", authMiddleware, upload.single("photo"), async (req, res) => {
+  try {
+    const item = await MenuItem.findById(req.params.id);
+    if (!item) return res.status(404).json({ message: "Item not found" });
+
+    item.photo = req.file.path;
+    await item.save();
+
+    res.json({ photo: item.photo });
+  } catch (err) {
+    res.status(500).json({ message: "Upload failed", error: err.message });
+  }
+});
 // Add item
 router.post('/', authMiddleware, async (req, res) => {
   try {

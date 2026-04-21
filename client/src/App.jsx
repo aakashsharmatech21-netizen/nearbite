@@ -8,8 +8,8 @@ import CookProfile from './pages/CookProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 import CookDashboard from './pages/cook/cookDashboard';
 import CookProfileEdit from './pages/cook/cookProfileEdit';
-import BuyerDashboard from './pages/buyer/BuyerDashboard';
-import BuyerProfileEdit from './pages/buyer/BuyerProfileEdit';
+import BuyerDashboard from './pages/Buyer/BuyerDashboard';
+import BuyerProfileEdit from './pages/Buyer/BuyerProfileEdit';
 
 export default function App() {
   return (

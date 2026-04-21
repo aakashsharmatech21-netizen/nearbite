@@ -13,8 +13,17 @@ router.post('/signup', async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
     const cook = await Cook.create({ name, email, password: hashed, bio, pincode, phone });
-    const token = jwt.sign({ id: cook._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.status(201).json({ token, cook: { id: cook._id, name: cook.name, pincode: cook.pincode } });
+
+    const token = jwt.sign(
+      { id: cook._id, role: 'cook' },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.status(201).json({
+      token,
+      user: { id: cook._id, name: cook.name, pincode: cook.pincode, role: 'cook' }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -30,8 +39,16 @@ router.post('/login', async (req, res) => {
     const match = await bcrypt.compare(password, cook.password);
     if (!match) return res.status(400).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: cook._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, cook: { id: cook._id, name: cook.name, pincode: cook.pincode } });
+    const token = jwt.sign(
+      { id: cook._id, role: 'cook' },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      token,
+      user: { id: cook._id, name: cook.name, pincode: cook.pincode, role: 'cook' }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -49,13 +66,13 @@ router.patch('/toggle', authMiddleware, async (req, res) => {
   }
 });
 
-// Update profile (bio, deliveryCharge)
+// Update profile
 router.patch('/profile', authMiddleware, async (req, res) => {
   try {
-    const { bio, deliveryCharge } = req.body;
+    const { name, bio, deliveryCharge, phone, pincode } = req.body;
     const cook = await Cook.findByIdAndUpdate(
       req.cookId,
-      { bio, deliveryCharge },
+      { name, bio, deliveryCharge, phone, pincode },
       { new: true }
     ).select('-password');
     res.json(cook);
@@ -63,6 +80,7 @@ router.patch('/profile', authMiddleware, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 // Get profile
 router.get('/profile', authMiddleware, async (req, res) => {
   try {

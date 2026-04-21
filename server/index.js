@@ -9,8 +9,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/menu', require('./routes/menu'));
+app.use('/api/auth',  require('./routes/auth'));        // cook auth
+app.use('/api/buyer', require('./routes/buyerAuth'));   // buyer auth
+app.use('/api/menu',  require('./routes/menu'));
 app.use('/api/cooks', require('./routes/cooks'));
 
 app.get('/', (req, res) => res.send('NearBite API running ✅'));

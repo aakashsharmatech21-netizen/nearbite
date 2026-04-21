@@ -6,8 +6,8 @@ module.exports = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded.role !== 'cook') return res.status(403).json({ message: 'Not a cook' });
-    req.cookId = decoded.id;
+    if (decoded.role !== 'buyer') return res.status(403).json({ message: 'Not a buyer' });
+    req.buyerId = decoded.id;
     next();
   } catch {
     res.status(401).json({ message: 'Invalid token' });

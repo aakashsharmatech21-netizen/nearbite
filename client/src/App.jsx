@@ -6,8 +6,8 @@ import Signup from './pages/Signup';
 import Browse from './pages/Browse';
 import CookProfile from './pages/CookProfile';
 import ProtectedRoute from './components/ProtectedRoute';
-import CookDashboard from './pages/cook/CookDashboard';
-import CookProfileEdit from './pages/cook/CookProfileEdit';
+import CookDashboard from './pages/cook/cookDashboard';
+import CookProfileEdit from './pages/cook/cookProfileEdit';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import BuyerProfileEdit from './pages/buyer/BuyerProfileEdit';
 
